@@ -743,6 +743,12 @@
                     }
                     
                     copyToClipboard(textToCopy);
+                    
+                    // Fermer le menu d'options en retirant la classe "active" de la carte parent
+                    const parentCard = option.closest('.icon-card');
+                    if (parentCard) {
+                        parentCard.classList.remove('active');
+                    }
                 });
             });
         }
