@@ -21,7 +21,7 @@
         }
 
         .container {
-            padding: 2.5vw 0 3vw 0;
+            padding: 2.5vw 0 3vw 15vw;
             position: fixed;
             top: 0;
             left: 0;
@@ -38,14 +38,13 @@
         .filter-sidebar {
             position: fixed;
             left: 0;
-            top: 12vw;
+            top: 0;
             width: 16vw;
             min-width: 180px;
-            height: calc(100vh - 12vw);
+            height: 100vh;
             background-color: #3e4547a7;
             backdrop-filter: blur(20px);
-            z-index: 98;
-            border-right: 1px solid rgba(84, 186, 71, 0.3);
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -260,14 +259,14 @@
             font-size: 1.8vw;
             margin-bottom: 0;
             color: #d3d3d3;
-            background-color: #3e4547a7;
+            background-color: #313333a7;
             padding: 1.5vw 1vw 1vw 1vw;
             flex-shrink: 0;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             font-weight: 500;
             text-align: center;
-            border-bottom: 1px solid rgba(84, 186, 71, 0.2);
+            border-bottom: 0.1vw solid rgb(84 186 71);
             position: sticky;
             top: 0;
             z-index: 1;
@@ -311,7 +310,7 @@
         .filter-group {
             display: flex;
             flex-direction: column;
-            gap: 0.3vw;
+            gap: 0.35vw;
             padding: 1vw;
             height: calc(100% - 4.5vw);
             margin-top: 0;
@@ -322,7 +321,7 @@
             align-items: center;
             justify-content: space-between;
             font-size: 1.1vw;
-            padding: 0.8vw 1vw;
+            padding: 0.6vw 1vw;
             border-radius: 0.4vw;
             cursor: pointer;
             transition: all 0.2s;
