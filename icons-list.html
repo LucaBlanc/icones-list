@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icons List</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="icons.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Archivo Narrow", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #2d3436;
+            color: #fff;
+        }
+
+        .container {
+            padding: 2.5vw 0 3vw 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 99;
+            background-color: #3e4547a7;
+            border-bottom: 1px solid #54ba47;
+            backdrop-filter: blur(20px);
+            flex-direction: column;
+            gap: 2vw;
+            width: 100%;
+        }
+
+        .filter-sidebar {
+            position: fixed;
+            left: 0;
+            top: 12vw;
+            width: 16vw;
+            min-width: 180px;
+            height: calc(100vh - 12vw);
+            background-color: #3e4547a7;
+            backdrop-filter: blur(20px);
+            z-index: 98;
+            border-right: 1px solid rgba(84, 186, 71, 0.3);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: scroll;
+        }
+
+        .icons-grid {
+            max-width: calc(80% - 16vw) !important;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 9vw));
+            gap: 2rem;
+            margin: 0 auto;
+            margin-right: 9vw;
+            position: relative;
+            top: 17vw;
+        }
+
+        .icon-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            width: 9vw;
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon-card.active {
+            z-index: 20;
+        }
+
+        .icon-card-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5vw;
+            padding: 2vw 1vw 2vw 1vw;
+            width: 100%;
+        }
+
+        .icon-card:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .icon-card:active {
+            transform: translateY(0);
+        }
+
+        .icon-name {
+            font-size: 1.2rem;
+            color: #dfe6e9;
+            text-align: center;
+        }
+
+        [data-icon] {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ebebeb;
+        }
+
+        [data-icon] svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 1.5;
+        }
+
+        .copy-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #54ba47;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 999;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 0;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            padding-right: 3rem;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 0.5rem;
+            top: 53%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 0.5rem;
+            display: none;
+            transition: color 0.2s;
+        }
+
+        .clear-search:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .clear-search.visible {
+            display: block;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .icon-count {
+            background: #54ba47;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .icon-copy-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 0.5rem;
+            padding: 0.5vw;
+            background: rgba(40, 40, 40, 1);
+            border-top: none;
+            border-radius: 0 0 1rem 1rem;
+            transform: translateY(-10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .icon-card.active .icon-copy-options {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .icon-copy-option {
+            background: rgba(84, 186, 71, 0.1);
+            color: #fff;
+            padding: 0.6rem 0.5rem;
+            border-radius: 0.4rem;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .icon-copy-option:hover {
+            background: rgba(84, 186, 71, 0.3);
+        }
+
+        .icon-card.active {
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .filter-container {
+            display: none;            
+        }
+
+        .filter-title {
+            font-size: 1.8vw;
+            margin-bottom: 0;
+            color: #d3d3d3;
+            background-color: #3e4547a7;
+            padding: 1.5vw 1vw 1vw 1vw;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 500;
+            text-align: center;
+            border-bottom: 1px solid rgba(84, 186, 71, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            backdrop-filter: blur(4px) brightness(110%) contrast(110%);
+        }
+
+        /* Style personnalisé pour la scrollbar (Chrome, Edge, Safari) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 10px;
+        }
+
+        /* Masquer les boutons de la scrollbar (triangles au début et à la fin) */
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        /* Masquer le coin de la scrollbar */
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(84, 186, 71, 0.3);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(84, 186, 71, 0.5);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3vw;
+            padding: 1vw;
+            height: calc(100% - 4.5vw);
+            margin-top: 0;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.1vw;
+            padding: 0.8vw 1vw;
+            border-radius: 0.4vw;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.1vw;
+            border-left: 2px solid transparent;
+        }
+
+        .filter-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-item.active {
+            background: rgba(0, 0, 0, 0.2);
+            color: #54ba47;
+        }
+
+        .filter-name {
+            flex: 1;
+            font-size: 0.9vw;
+            color: #838383;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-count {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0.8vw;
+            padding: 0.3vw 0.7vw;
+            font-size: 0.8vw;
+            color: #a0a0a0;
+            text-align: center;
+            font-weight: 300;
+        }
+
+        .filter-item.active .filter-count {
+            background: rgba(84, 186, 71, 0.3);
+            color: #ffffff;
+        }
+
+        .filter-item.active .filter-name {
+            color: #54ba47;
+            font-weight: 500;
+        }
+
+        .icons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5vw;
+            flex: 1;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5vw;
+            width: 8vw;
+            height: 8vw;
+            padding: 1vw;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1vw;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-0.3vw);
+        }
+
+        .icon-name {
+            font-size: 1.2vw;
+            text-align: center;
+            color: #eaeaea;
+            word-break: break-word;
+        }
+        
+        .hidden-icon {
+            display: none;
+        }
+
+        .no-results {
+            width: 100%;
+            text-align: center;
+            font-size: 1.8vw;
+            color: #eaeaea;
+            padding: 3vw;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <h1>Icons List</h1>
+            <span class="icon-count">${iconsList.length} icons</span>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Rechercher une icône...">
+            <button class="clear-search">
+                <i data-lucide="delete" data-size="20"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar des filtres à gauche -->
+    <div class="filter-sidebar">
+        <div class="filter-title">Catégories</div>
+        <div class="filter-group">
+            <div class="filter-item active" data-category="all">
+                <div class="filter-name">Toutes</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="weather">
+                <div class="filter-name">Météo</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="nature">
+                <div class="filter-name">Nature</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="communication">
+                <div class="filter-name">Communication</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="devices">
+                <div class="filter-name">Appareils</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="files">
+                <div class="filter-name">Fichiers</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="media">
+                <div class="filter-name">Média</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="commerce">
+                <div class="filter-name">Commerce</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="transportation">
+                <div class="filter-name">Transport</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="buildings">
+                <div class="filter-name">Bâtiments</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="health">
+                <div class="filter-name">Santé</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="food">
+                <div class="filter-name">Alimentation</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="ui">
+                <div class="filter-name">Interface</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="map">
+                <div class="filter-name">Carto</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="alert">
+                <div class="filter-name">Alertes</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="data">
+                <div class="filter-name">Données</div>
+                <div class="filter-count">0</div>
+            </div>
+            <div class="filter-item" data-category="time">
+                <div class="filter-name">Temps</div>
+                <div class="filter-count">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="icons-grid">
+        <!-- Icône test pour vérifier que Lucide fonctionne -->
+    </div>
+
+    <div class="copy-feedback">Copié dans le presse-papier !</div>
+
+    <div class="no-results">Aucune icône ne correspond aux filtres sélectionnés</div>
+
+    <script>
+        // Mots-clés pour l'attribution automatique des catégories
+        const categoryKeywords = {
+            weather: ["cloud-", "sun-", "moon-", "rain-", "wind-", "snow-", "thunder", "lightning", "umbrella", "thermometer", "temperature", "weather", "storm", "fog", "hail", "rainbow", "sunrise", "sunset", "-gauge"],
+            nature: ["leaf", "tree", "plant", "flower", "mountain", "waves", "droplet", "water", "fire", "flame", "sprout", "nature", "bird", "animal", "forest"],
+            communication: ["mail", "message", "phone", "call", "chat", "comment", "share", "send", "letter", "inbox", "envelope"],
+            devices: ["smartphone", "tablet", "laptop", "computer", "camera", "monitor", "tv", "screen", "printer", "battery", "device", "bluetooth", "wifi", "signal", "headphone"],
+            files: ["file", "folder", "document", "clipboard", "paper", "attachment", "archive"],
+            media: ["play", "pause", "stop", "music", "video", "image", "picture", "photo", "audio", "volume", "mic", "camera", "film", "movie", "gallery"],
+            commerce: ["shopping", "cart", "bag", "money", "coin", "credit", "card", "wallet", "dollar", "euro", "currency", "tag", "price", "discount", "payment", "receipt", "shop", "store"],
+            transportation: ["car", "bus", "train", "plane", "ship", "truck", "bicycle", "bike", "vehicle", "transport"],
+            buildings: ["home", "house", "building", "office", "shop", "store", "factory", "hospital", "school"],
+            health: ["heart", "pulse", "activity", "health", "medical", "medicine", "pill", "hospital", "ambulance"],
+            food: ["food", "drink", "coffee", "fruit", "vegetable", "meal", "kitchen", "cooking", "restaurant"],
+            ui: ["settings", "menu", "user", "search", "eye", "download", "upload", "trash", "delete", "add", "remove", "check", "cross", "arrow", "chevron", "move", "resize", "drag", "edit", "pen", "lock", "key", "link", "star", "bookmark", "flag", "filter", "sort", "view", "grid", "list", "layout", "zoom", "collapse", "expand"]
+        };
+        
+        // Fonction pour déterminer la catégorie d'une icône par son nom
+        function determineCategory(iconName) {
+            // Liste d'exceptions connues
+            const exceptions = {
+                "app-window": "ui",
+                "app-window-mac": "ui",
+                "brain": "health",
+                "brain-circuit": "health",
+                "brain-cog": "health",
+                "window": "ui",
+                "snowflake": "weather",
+                "rainbow": "weather",
+                "car-front": "transportation",
+                "smartphone": "devices",
+                "tablet": "devices",
+                "laptop": "devices",
+                "monitor": "devices"
+            };
+            
+            // Vérifier si l'icône est dans notre liste d'exceptions
+            if (exceptions[iconName]) {
+                return exceptions[iconName];
+            }
+            
+            // Tableau de priorité des catégories (vérifiées dans l'ordre)
+            const categoryPriority = [
+                "devices", 
+                "health", 
+                "communication", 
+                "transportation",
+                "buildings",
+                "food",
+                "files",
+                "media",
+                "commerce",
+                "weather",
+                "nature",
+                "alert",
+                "time",
+                "map",
+                "ui"
+            ];
+            
+            // Parcourir les catégories dans l'ordre de priorité
+            for (const category of categoryPriority) {
+                const keywords = categoryKeywords[category];
+                if (keywords && keywords.some(keyword => {
+                    // Si le mot-clé se termine par -, il doit être au début du nom
+                    if (keyword.endsWith('-')) {
+                        return iconName.startsWith(keyword.slice(0, -1));
+                    }
+                    // Si le mot-clé commence par -, il doit être à la fin du nom
+                    else if (keyword.startsWith('-')) {
+                        return iconName.endsWith(keyword.slice(1));
+                    }
+                    // Sinon, il peut être n'importe où dans le nom
+                    else {
+                        return iconName.includes(keyword);
+                    }
+                })) {
+                    return category;
+                }
+            }
+            
+            // Par défaut, considérer l'icône comme UI si aucune correspondance n'est trouvée
+            return "ui";
+        }
+
+        let currentIconName = '';
+
+        function generateIconCards() {
+            // Attendre que lucide soit disponible
+            if (!window.lucide || !window.lucide.icons) {
+                setTimeout(generateIconCards, 100);
+                return;
+            }
+
+            // Récupérer les noms d'icônes supplémentaires disponibles dans Lucide
+            const allIconNames = Object.keys(window.lucide.icons)
+                .map(name => {
+                    // Cas spéciaux pour les noms qui commencent par AA et AL
+                    if (name === 'AArrowDown') return 'a-arrow-down';
+                    if (name === 'AArrowUp') return 'a-arrow-up';
+                    if (name === 'ALargeSmall') return 'a-large-small';
+                    if (name === 'MSquare') return 'm-square';
+                    if (name === 'MapPinXInside') return 'map-pin-x-inside';
+                    // Convertir les autres noms en kebab-case
+                    if (name.startsWith('X') && name.length > 1) {
+                        return 'x-' + name.slice(1).replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                    }
+                    return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+                })
+                .sort();
+
+            // Compter les icônes par catégorie
+            const categoryCounts = {
+                all: allIconNames.length
+            };
+
+            // Initialiser les compteurs à zéro
+            document.querySelectorAll('.filter-item').forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (category !== 'all') {
+                    categoryCounts[category] = 0;
+                }
+            });
+
+            // Compter les icônes par catégorie
+            allIconNames.forEach(iconName => {
+                const category = determineCategory(iconName);
+                if (categoryCounts[category] !== undefined) {
+                    categoryCounts[category]++;
+                }
+            });
+
+            // Mettre à jour les compteurs dans l'interface et masquer les catégories vides
+            document.querySelectorAll('.filter-item').forEach(item => {
+                const category = item.getAttribute('data-category');
+                const countElement = item.querySelector('.filter-count');
+                if (countElement) {
+                    const count = categoryCounts[category] || 0;
+                    countElement.textContent = count;
+                    
+                    // Masquer les catégories qui n'ont aucune icône (sauf "Toutes")
+                    if (count === 0 && category !== 'all') {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'flex';
+                    }
+                }
+            });
+
+            const grid = document.querySelector('.icons-grid');
+            grid.innerHTML = '';
+            allIconNames.forEach(iconName => {
+                const card = document.createElement('div');
+                card.className = 'icon-card';
+
+                const cardItems = document.createElement('div');
+                cardItems.className = 'icon-card-items';
+                
+                const iconElement = document.createElement('i');
+                iconElement.setAttribute('data-lucide', iconName);
+                iconElement.setAttribute('data-size', '6');
+                iconElement.setAttribute('data-color', '#54ba47');
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'icon-name';
+                nameDiv.textContent = iconName.split('-').join(' ');
+                
+                // Ajouter les options de copie
+                const copyOptions = document.createElement('div');
+                copyOptions.className = 'icon-copy-options';
+                
+                const copyFull = document.createElement('div');
+                copyFull.className = 'icon-copy-option';
+                copyFull.setAttribute('data-type', 'full');
+                copyFull.setAttribute('data-icon', iconName);
+                copyFull.textContent = 'Copier l\'intégration';
+                
+                const copyName = document.createElement('div');
+                copyName.className = 'icon-copy-option';
+                copyName.setAttribute('data-type', 'name');
+                copyName.setAttribute('data-icon', iconName);
+                copyName.textContent = 'Copier le nom de l\'icône';
+                
+                copyOptions.appendChild(copyFull);
+                copyOptions.appendChild(copyName);
+                
+                cardItems.appendChild(iconElement);
+                cardItems.appendChild(nameDiv);
+                card.appendChild(cardItems);
+                card.appendChild(copyOptions);
+                grid.appendChild(card);
+            });
+            
+            lucide.createIcons();
+            
+            const countElement = document.querySelector('.icon-count');
+            countElement.textContent = `${allIconNames.length} icons`;
+            
+            // Ajouter les événements de clic pour afficher/masquer les options de copie
+            document.querySelectorAll('.icon-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Fermer toutes les autres cards ouvertes
+                    document.querySelectorAll('.icon-card.active').forEach(activeCard => {
+                        if (activeCard !== card) {
+                            activeCard.classList.remove('active');
+                        }
+                    });
+                    
+                    // Basculer l'état de la card cliquée
+                    card.classList.toggle('active');
+                    e.stopPropagation();
+                });
+            });
+            
+            // Gérer les clics sur les options de copie
+            document.querySelectorAll('.icon-copy-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const type = option.dataset.type;
+                    const iconName = option.dataset.icon;
+                    let textToCopy = '';
+                    
+                    if (type === 'full') {
+                        textToCopy = `<i data-lucide="${iconName}" data-size="60" data-color="#ebebeb"></i>`;
+                    } else if (type === 'name') {
+                        textToCopy = iconName;
+                    }
+                    
+                    copyToClipboard(textToCopy);
+                });
+            });
+        }
+
+        function showCopyFeedback() {
+            const feedback = document.querySelector('.copy-feedback');
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    showCopyFeedback();
+                })
+                .catch(err => {
+                    console.error('Erreur lors de la copie :', err);
+                });
+        }
+
+        function filterIcons(searchTerm) {
+            const cards = document.querySelectorAll('.icon-card');
+            let visibleCount = 0;
+
+            // Obtenir les catégories sélectionnées
+            const filterItems = document.querySelectorAll('.filter-item');
+            const allFilterItem = document.querySelector('.filter-item[data-category="all"]');
+            const selectedCategories = Array.from(filterItems)
+                .filter(item => item !== allFilterItem && item.classList.contains('active'))
+                .map(item => item.getAttribute('data-category'));
+            
+            const showAll = allFilterItem.classList.contains('active') || selectedCategories.length === 0;
+            
+            cards.forEach(card => {
+                const iconName = card.querySelector('.icon-name').textContent.replace(/\s+/g, '-');
+                const category = determineCategory(iconName);
+                const matchesSearch = iconName.includes(searchTerm.toLowerCase());
+                const matchesCategory = showAll || selectedCategories.includes(category);
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Afficher ou masquer le message "Aucun résultat"
+            const noResults = document.querySelector('.no-results');
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        
+        // Attendre que la page soit chargée
+        window.addEventListener('DOMContentLoaded', () => {
+            generateIconCards();
+            setupFilters();
+            
+            const searchInput = document.querySelector('.search-input');
+            const clearButton = document.querySelector('.clear-search');
+
+            // Gérer la visibilité du bouton clear
+            searchInput.addEventListener('input', (e) => {
+                filterIcons(e.target.value);
+                clearButton.classList.toggle('visible', e.target.value.length > 0);
+            });
+
+            // Gérer le clic sur le bouton clear
+            clearButton.addEventListener('click', () => {
+                searchInput.value = '';
+                searchInput.focus();
+                filterIcons('');
+                clearButton.classList.remove('visible');
+            });
+
+            // Fermer toutes les cards ouvertes lors d'un clic sur le document
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.icon-card')) {
+                    document.querySelectorAll('.icon-card.active').forEach(card => {
+                        card.classList.remove('active');
+                    });
+                }
+            });
+        });
+
+        // Fonction pour gérer le filtrage des icônes
+        function setupFilters() {
+            const filterItems = document.querySelectorAll('.filter-item');
+            const allFilterItem = document.querySelector('.filter-item[data-category="all"]');
+            
+            // Trier les catégories par ordre alphabétique (sauf "Toutes" qui reste en premier)
+            const filterGroup = document.querySelector('.filter-group');
+            const allItems = Array.from(filterItems);
+            
+            // Retirer tous les éléments de filtre
+            allItems.forEach(item => item.remove());
+            
+            // Remettre d'abord "Toutes"
+            filterGroup.appendChild(allFilterItem);
+            
+            // Trier le reste par ordre alphabétique et les ajouter
+            allItems
+                .filter(item => item !== allFilterItem)
+                .sort((a, b) => {
+                    const textA = a.querySelector('.filter-name').textContent.trim().toLowerCase();
+                    const textB = b.querySelector('.filter-name').textContent.trim().toLowerCase();
+                    return textA.localeCompare(textB, 'fr');
+                })
+                .forEach(item => filterGroup.appendChild(item));
+            
+            // Gérer le clic sur "Toutes"
+            allFilterItem.addEventListener('click', function() {
+                // Toujours activer "Toutes" et désactiver les autres quand on clique dessus
+                filterItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+                filterIcons(document.querySelector('.search-input').value || '');
+            });
+            
+            // Gérer les clics sur les autres filtres
+            filterItems.forEach(item => {
+                if (item !== allFilterItem) {
+                    item.addEventListener('click', function() {
+                        // Désactiver toutes les catégories
+                        filterItems.forEach(i => i.classList.remove('active'));
+                        
+                        // Activer uniquement la catégorie cliquée
+                        this.classList.add('active');
+                        
+                        filterIcons(document.querySelector('.search-input').value || '');
+                    });
+                }
+            });
+        }
+        
+        // Initialiser lorsque le DOM est chargé
+        document.addEventListener('DOMContentLoaded', () => {
+            setupFilters();
+        });
+    </script>
+</body>
+</html> 
